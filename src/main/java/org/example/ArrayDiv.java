@@ -4,53 +4,28 @@ public class ArrayDiv {
     private final float[] arrA;
     private final float[] arrB;
     private final float[] arrC;
-    private final int arrALength;
-    private final int arrBLength;
+    private final int lengthA;
 
     public ArrayDiv(float[] arrA, float[] arrB) {
-        if (arrA == null || arrB == null) {
-            throw new RuntimeException("Один, либо оба входящих массива = Null.");
-        }
+        if (arrA == null || arrB == null) {throw new RuntimeException("Какой-то (или оба) массив - Null.");}
         this.arrA = arrA;
         this.arrB = arrB;
-        arrALength = arrA.length;
-        arrBLength = arrB.length;
-        if (arrALength == 0 || arrBLength == 0) {
-            throw new RuntimeException("Один, либо оба входящих массива не содержит(ат) элементов.");
-        }
-        arrC = new float[arrALength];
+        lengthA = arrA.length;
+        int lengthB = arrB.length;
+        if (lengthA == 0 || lengthB == 0) {throw new RuntimeException("Какой-то (или оба) массив пустой");}
+        if (lengthA != lengthB) {throw new RuntimeException("Массивы разной длинны.");}
+        arrC = new float[lengthA];
     }
 
-    public void arrayDifferenceVar1() {
-        if (arrALength != arrBLength) {
-            throw new RuntimeException("Массивы разной длинны.");
-        }
-        for (int i = 0; i < arrALength; i++) {
+    public void arrayDifference() {
+        for (int i = 0; i < lengthA; i++) {
             arrC[i] = arrA[i] - arrB[i];
         }
         resultPrinter();
     }
-    
-    // самый кривой способ.
-    public void arrayDifferenceVar2() {
-        if (arrALength != arrBLength) {
-            ErrorHandler();
-        } else {
-            for (int i = 0; i < arrALength; i++) {
-                arrC[i] = arrA[i] - arrB[i];
-            }
-            resultPrinter();
-        }
-    }
-    private void ErrorHandler(){
-        System.out.println("Массивы разной длинны.");
-    }
 
     public void arrayDivider(){
-        if (arrALength != arrBLength) {
-            throw new RuntimeException("Массивы разной длинны.");
-        }
-        for (int i = 0; i < arrALength; i++) {
+        for (int i = 0; i < lengthA; i++) {
             if (arrB[i] == 0) {
                 throw new RuntimeException("Попытка деления на ноль.");
             }
