@@ -1,12 +1,12 @@
 package org.example;
 
-public class ArrayDiv {
+public class ArrayHandler {
     private final float[] arrA;
     private final float[] arrB;
     private final float[] arrC;
     private final int lengthA;
 
-    public ArrayDiv(float[] arrA, float[] arrB) {
+    public ArrayHandler(float[] arrA, float[] arrB) {
         if (arrA == null || arrB == null) {throw new RuntimeException("Какой-то (или оба) массив - Null.");}
         this.arrA = arrA;
         this.arrB = arrB;
