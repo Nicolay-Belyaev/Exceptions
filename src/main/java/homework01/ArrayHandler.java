@@ -1,4 +1,4 @@
-package org.example;
+package homework01;
 
 public class ArrayHandler {
     private final float[] arrA;
