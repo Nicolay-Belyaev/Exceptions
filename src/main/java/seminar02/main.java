@@ -8,7 +8,7 @@ public class main {
         try {
             FileReader wr = new FileReader("src/main/java/seminar02/text.txt");
             int c;
-            while ((c=wr.read()) <= -1) {
+            while ((c=wr.read()) != -1) {
                 System.out.print((char) c);
             }
         } catch (IOException e) {
