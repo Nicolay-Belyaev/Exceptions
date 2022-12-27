@@ -48,7 +48,6 @@ public class StringParser {
             memberOfFullName.append(fullName.charAt(0));
             fullName.deleteCharAt(0);
         }
-
         while (fullName.length() != 0 && fullName.charAt(0) == ' ') {
             fullName.deleteCharAt(0);
         }
