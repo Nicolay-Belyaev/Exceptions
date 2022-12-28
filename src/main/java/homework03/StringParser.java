@@ -1,21 +1,28 @@
 package homework03;
 
-// Задача парсера - распарсить строку. Неважно, какая ерунда нам пришла вместо ожидаемых данных,
-// парсинг должен пройти без ошибок. Проверкой ошибок в данных будет заниматься валидатор.
-// Еще парсер очень старается быть добрым и прощать пользователю пропущенные (или лишние) пробелы.
+import org.jetbrains.annotations.NotNull;
+
+/**
+ Задача парсера - распарсить строку.
+ Неважно, какая ерунда нам пришла вместо ожидаемых данных, парсинг должен пройти без ошибок.
+ Проверкой ошибок в данных будет заниматься валидатор.
+ Еще парсер очень старается быть добрым и прощать пользователю пропущенные (или лишние) пробелы.
+ Кроме того, автор парсера встречался в своей биографии как с людьми, у которых нет не только отчества, но и фамилии,
+ т.е. их "ID" состояло из 1 слова, так и тех, у кого полное имя состоит из, скажем, 4 частей.
+ Поэтому он наделил парсер способностью спокойно относиться к таким случая. Что не по ТЗ, конечно, ага.
+ **/
 
 public class StringParser {
     private final StringBuilder fullName = new StringBuilder();
     private String surname;
     private String name;
     private String patronymic;
-    private final String birthday;
-    private final String phoneNumber;
-    private final String sex;
+    private String birthday;
+    private String phoneNumber;
+    private String sex;
 
     public StringParser(String incomingString) {
-        StringBuilder sbIncomingString = new StringBuilder();
-        sbIncomingString.append(incomingString);
+        StringBuilder sbIncomingString = new StringBuilder(incomingString);
         parsFullName(sbIncomingString);
         if (!fullName.isEmpty()) {
             surname = stringBuilderChooper(fullName);

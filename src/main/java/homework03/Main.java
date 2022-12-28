@@ -2,7 +2,7 @@ package homework03;
 
 public class Main {
     public static void main(String[] args) {
-        String inStr = "Belyaev Nick Serg 30.12.1991 9215151502 M";
+        String inStr = "Belyaev-Petrov Nick Serg 30.12.1991 9215151502 M";
 
         StringParser strParts = new StringParser(inStr);
         System.out.println(strParts.getSurname());
