@@ -1,74 +1,59 @@
 package homework03;
 
 // Задача парсера - распарсить строку. Неважно, какая ерунда нам пришла вместо ожидаемых данных,
-// парсинг всегда должен пройти без ошибок. Проверкой ошибок в данных будет заниматься валидатор.
-// Еще парсер очень старается быть добрым, и прощать пользователю пропущенные (или лишние) пробелы.
+// парсинг должен пройти без ошибок. Проверкой ошибок в данных будет заниматься валидатор.
+// Еще парсер очень старается быть добрым и прощать пользователю пропущенные (или лишние) пробелы.
 
 public class StringParser {
     private final StringBuilder fullName = new StringBuilder();
-    private final StringBuilder sbIncomingString = new StringBuilder();
     private String surname;
     private String name;
     private String patronymic;
     private final String birthday;
     private final String phoneNumber;
-    private String sex;
+    private final String sex;
 
     public StringParser(String incomingString) {
+        StringBuilder sbIncomingString = new StringBuilder();
         sbIncomingString.append(incomingString);
         parsFullName(sbIncomingString);
         if (!fullName.isEmpty()) {
-            surname = dismemberFullName();
+            surname = stringBuilderChooper(fullName);
             if (!fullName.isEmpty()) {
-                name = dismemberFullName();
+                name = stringBuilderChooper(fullName);
                 if (!fullName.isEmpty()) {
-                    patronymic = fullName.charAt(fullName.length() - 1) == ' ' ?
-                                 fullName.substring(0, fullName.length() - 1) :
-                                 fullName.toString();
+                    patronymic = stringBuilderChooper(fullName);
                 }
             }
         }
-        birthday = parsDigits();
-        phoneNumber = parsDigits();
-        parsSex();
+        birthday = stringBuilderChooper(sbIncomingString);
+        phoneNumber = stringBuilderChooper(sbIncomingString);
+        sex = stringBuilderChooper(sbIncomingString);
     }
     private void parsFullName(StringBuilder sbIncomingString) {
         while(sbIncomingString.length() != 0 && !Character.isDigit(sbIncomingString.charAt(0))) {
             fullName.append(sbIncomingString.charAt(0));
             sbIncomingString.deleteCharAt(0);
         }
-        while (fullName.length() != 0  && fullName.charAt(0) == ' ') {
-                fullName.deleteCharAt(0);
-        }
-    }
-    private String dismemberFullName() {
-        StringBuilder memberOfFullName = new StringBuilder();
-        while(fullName.length() != 0 && !Character.isWhitespace(fullName.charAt(0))) {
-            memberOfFullName.append(fullName.charAt(0));
-            fullName.deleteCharAt(0);
-        }
-        while (fullName.length() != 0 && fullName.charAt(0) == ' ') {
-            fullName.deleteCharAt(0);
-        }
-        return memberOfFullName.toString();
+        removeSpaceFromHead(fullName);
     }
 
-    private String parsDigits() {
-        StringBuilder sbDigits = new StringBuilder();
-        while(sbIncomingString.length() != 0 && !Character.isWhitespace(sbIncomingString.charAt(0))) {
-            sbDigits.append(sbIncomingString.charAt(0));
-            sbIncomingString.deleteCharAt(0);
+    private String stringBuilderChooper(StringBuilder target) {
+        StringBuilder partOfStringBuilder = new StringBuilder();
+        while(target.length() != 0 && !Character.isWhitespace(target.charAt(0))) {
+            partOfStringBuilder.append(target.charAt(0));
+            target.deleteCharAt(0);
         }
-        while (sbIncomingString.length() != 0 && sbIncomingString.charAt(0) == ' ') {
-            sbIncomingString.deleteCharAt(0);
-        }
-        return sbDigits.toString();
+        removeSpaceFromHead(target);
+        return partOfStringBuilder.toString();
     }
-    private void parsSex() {
-        if (sbIncomingString.length() != 0) {
-            sex = sbIncomingString.toString();
+
+    private void removeSpaceFromHead(StringBuilder target) {
+        while (target.length() != 0 && target.charAt(0) == ' ') {
+            target.deleteCharAt(0);
         }
     }
+
     public String getSurname() {return surname;}
     public String getName() {return name;}
     public String getPatronymic() {return patronymic;}
