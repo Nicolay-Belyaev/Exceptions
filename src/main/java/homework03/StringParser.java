@@ -1,45 +1,44 @@
 package homework03;
 
-import java.util.Date;
+// Задача парсера - распарсить строку. Неважно, какая ерунда нам пришла вместо ожидаемых данных,
+// парсинг всегда должен пройти без ошибок. Проверкой ошибок в данных будет заниматься валидатор.
+// Еще парсер очень старается быть добрым, и прощать пользователю пропущенные (или лишние) пробелы.
 
 public class StringParser {
     private final StringBuilder fullName = new StringBuilder();
+    private final StringBuilder sbIncomingString = new StringBuilder();
     private String surname;
     private String name;
     private String patronymic;
-    private Date birthday;
-    private int phoneNumber;
+    private final String birthday;
+    private final String phoneNumber;
     private String sex;
 
     public StringParser(String incomingString) {
-        StringBuilder sbIncomingString = new StringBuilder(incomingString);
-        try {
-            parsFullName(sbIncomingString);
+        sbIncomingString.append(incomingString);
+        parsFullName(sbIncomingString);
+        if (!fullName.isEmpty()) {
             surname = dismemberFullName();
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("Имя не указано/указано неверно или нарушен формат ввода. " +
-                               "Начните ввод данных c имени (+ фамилия и отчество если есть).");
+            if (!fullName.isEmpty()) {
+                name = dismemberFullName();
+                if (!fullName.isEmpty()) {
+                    patronymic = fullName.charAt(fullName.length() - 1) == ' ' ?
+                                 fullName.substring(0, fullName.length() - 1) :
+                                 fullName.toString();
+                }
+            }
         }
-        if (!fullName.isEmpty()) {
-            name = dismemberFullName();
-        }
-        if (!fullName.isEmpty()) {
-            patronymic = fullName.charAt(fullName.length() - 1) == ' ' ?
-                    fullName.substring(0, fullName.length() - 1) :
-                    fullName.toString();
-        }
-        parsBirthday();
-        parsPhoneNumber();
+        birthday = parsDigits();
+        phoneNumber = parsDigits();
         parsSex();
     }
-
-    private void parsFullName(StringBuilder sbIncomingstring) {
-        while(!Character.isDigit(sbIncomingstring.charAt(0))) {
-            fullName.append(sbIncomingstring.charAt(0));
-            sbIncomingstring.deleteCharAt(0);
+    private void parsFullName(StringBuilder sbIncomingString) {
+        while(sbIncomingString.length() != 0 && !Character.isDigit(sbIncomingString.charAt(0))) {
+            fullName.append(sbIncomingString.charAt(0));
+            sbIncomingString.deleteCharAt(0);
         }
-        while (fullName.charAt(0) == ' ') {
-            fullName.deleteCharAt(0);
+        while (fullName.length() != 0  && fullName.charAt(0) == ' ') {
+                fullName.deleteCharAt(0);
         }
     }
     private String dismemberFullName() {
@@ -54,16 +53,26 @@ public class StringParser {
         return memberOfFullName.toString();
     }
 
-    private void parsBirthday() {
-
-    }
-    private void parsPhoneNumber() {
-
+    private String parsDigits() {
+        StringBuilder sbDigits = new StringBuilder();
+        while(sbIncomingString.length() != 0 && !Character.isWhitespace(sbIncomingString.charAt(0))) {
+            sbDigits.append(sbIncomingString.charAt(0));
+            sbIncomingString.deleteCharAt(0);
+        }
+        while (sbIncomingString.length() != 0 && sbIncomingString.charAt(0) == ' ') {
+            sbIncomingString.deleteCharAt(0);
+        }
+        return sbDigits.toString();
     }
     private void parsSex() {
-
+        if (sbIncomingString.length() != 0) {
+            sex = sbIncomingString.toString();
+        }
     }
     public String getSurname() {return surname;}
     public String getName() {return name;}
     public String getPatronymic() {return patronymic;}
+    public String getBirthday() {return birthday;}
+    public String getPhoneNumber() {return phoneNumber;}
+    public String getSex() {return sex;}
 }
