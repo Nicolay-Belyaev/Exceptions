@@ -20,6 +20,7 @@ public class StringValidator {
         surnameValidator();
         nameValidator();
         birthdayValidator();
+        phoneNumberValidator();
 
     }
 
@@ -64,13 +65,15 @@ public class StringValidator {
 
     private void phoneNumberValidator() {
         if (!parsedString.getPhoneNumber().matches("^\\d{5,18}$")) {
-
+            throw new RuntimeException("Ошибка ввода телефона: телефон не введен или нарушен формат ввода." +
+                                       "Правильный формат: от 5 до 18 символов, только числа без форматирования");
         }
     }
 
     private void sexValidator() {
         if (!parsedString.getSex().matches("^[mMfF]$")) {
-
+            throw new RuntimeException("Ошибка ввода пола: пол не введен или нарушен формат ввода." +
+                                       "Правильный формат ввода: латинские строчный или заглавные буквы");
         }
     }
 
