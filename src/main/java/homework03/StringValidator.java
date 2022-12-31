@@ -21,7 +21,8 @@ public class StringValidator {
         nameValidator();
         birthdayValidator();
         phoneNumberValidator();
-
+        sexValidator();
+        dataOverFlowValidator();
     }
 
     private void surnameValidator() {
@@ -32,7 +33,7 @@ public class StringValidator {
         // тут могут быть проблемы с кодировкой, в которых я пока не разобрался.
         if (!surname.matches("^([A-Za-z]{2,}|[а-яА-ЯЁё]{2,})$")) {
             throw new RuntimeException("Ошибка ввода фамилии: фамилия должна содержать не менее 2-х символов" +
-                                       "латиницы или кириллицы (только заглавные или строчный буквы");
+                                       "латиницы или кириллицы (только заглавные или строчный буквы).");
         }
     }
 
@@ -41,16 +42,20 @@ public class StringValidator {
     private void nameValidator() {
         String name = parsedString.getName();
         if (name == null) {
-            Scanner comfirmationScanner = new Scanner(System.in);
+            Scanner scanner = new Scanner(System.in);
             String confirmation = "";
             while (!confirmation.matches("^[yYnN]$")) {
                 System.out.print("Подтвердите отсутствие имени (y/n): ");
-                confirmation = comfirmationScanner.nextLine();
+                confirmation = scanner.nextLine();
             }
             if (confirmation.matches("[nN]")) {
-                // а сюда надо не эксепшен выдавать, а запускать программу заново, а еще лучше - просто дать пользователю указать имя через setName()
-                throw new RuntimeException("Ошибка ввода имени: пожалуйста, введите данные заново.");
+                System.out.print("Введите имя: ");
+                parsedString.setName(scanner.nextLine());
+                nameValidator();
             }
+        } else if ((!name.matches("^([A-Za-z]{2,}|[а-яА-ЯЁё]{2,})$"))) {
+            throw new RuntimeException("Ошибка ввода фамилии: имя (если есть) должно содержать не менее 2-х символов\n" +
+                                       "латиницы или кириллицы (только заглавные или строчный буквы");
         }
     }
 
@@ -58,14 +63,13 @@ public class StringValidator {
         // недостает мощи, пропускает дату вроде 30.02.2002
         if (!parsedString.getBirthday().matches("(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[012])\\.((19|20)\\d\\d)$")){
             throw new RuntimeException("Ошибка ввода даты рождения: дата рождения не введена или нарушен " +
-                                       "формат ввода. Правильный формат: дд.мм.гггг");
-
+                                       "формат ввода.\nПравильный формат: дд.мм.гггг");
         }
     }
 
     private void phoneNumberValidator() {
         if (!parsedString.getPhoneNumber().matches("^\\d{5,18}$")) {
-            throw new RuntimeException("Ошибка ввода телефона: телефон не введен или нарушен формат ввода." +
+            throw new RuntimeException("Ошибка ввода телефона: телефон не введен или нарушен формат ввода.\n" +
                                        "Правильный формат: от 5 до 18 символов, только числа без форматирования");
         }
     }
@@ -74,6 +78,12 @@ public class StringValidator {
         if (!parsedString.getSex().matches("^[mMfF]$")) {
             throw new RuntimeException("Ошибка ввода пола: пол не введен или нарушен формат ввода." +
                                        "Правильный формат ввода: латинские строчный или заглавные буквы");
+        }
+    }
+
+    private void dataOverFlowValidator() {
+        if (!parsedString.getFullName().isEmpty()) {
+            throw new RuntimeException("Ошибка ввода данных: введено слишком много данных. Проверить входящую строку");
         }
     }
 

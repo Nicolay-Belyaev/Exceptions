@@ -13,5 +13,12 @@ public class Main {
         System.out.println(strParts.getSex());
 
         StringValidator validator = new StringValidator(strParts);
+
+        System.out.println(strParts.getSurname());
+        System.out.println(strParts.getName());
+        System.out.println(strParts.getPatronymic());
+        System.out.println(strParts.getBirthday());
+        System.out.println(strParts.getPhoneNumber());
+        System.out.println(strParts.getSex());
     }
 }

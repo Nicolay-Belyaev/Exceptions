@@ -61,6 +61,8 @@ public class StringParser {
         }
     }
 
+    public void setName(String name) {this.name = name;}
+    public StringBuilder getFullName() {return fullName;}
     public String getSurname() {return surname;}
     public String getName() {return name;}
     public String getPatronymic() {return patronymic;}
