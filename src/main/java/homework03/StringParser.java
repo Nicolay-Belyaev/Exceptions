@@ -1,7 +1,5 @@
 package homework03;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  Задача парсера - распарсить строку.
  Неважно, какая ерунда нам пришла вместо ожидаемых данных, парсинг должен пройти без ошибок.
@@ -62,6 +60,7 @@ public class StringParser {
     }
 
     public void setName(String name) {this.name = name;}
+    public void setPatronymic(String patronymic) {this.patronymic = patronymic;}
     public StringBuilder getFullName() {return fullName;}
     public String getSurname() {return surname;}
     public String getName() {return name;}

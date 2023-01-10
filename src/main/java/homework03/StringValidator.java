@@ -7,9 +7,10 @@ import java.util.Scanner;
  * Но ничего умнее я пока не придумал/не знаю.
  * <p>
  * Отдельный класс-валидатор может решать не только задачи "неккоретные данные -> выкинуть эксепшен",
- * но и задавать более сложное поведение, например править явно неправильный ввод.
- * Скажем, в нашем случае мы хотим писать в текстовый файл что-то вместо null если на ввод не пришло имя/отчество.
- * Такой подход нарушает принцип единственное ответственности.
+ * но и задавать более сложное поведение, например, страховать пользователя не лишая программу гибкости поведения.
+ * Скажем, в нашем случае мы хотим переспросить пользователя, точно ли в данных нет имени/отчества, а если да,
+ * то писать в текстовый файл что-то вместо null.
+ * В каком-то смысле, такой подход нарушает принцип единственной ответственности, но где та тонкая грань...
  */
 
 public class StringValidator {
@@ -19,6 +20,7 @@ public class StringValidator {
         this.parsedString = parsedString;
         surnameValidator();
         nameValidator();
+        patronymicValidator();
         birthdayValidator();
         phoneNumberValidator();
         sexValidator();
@@ -31,31 +33,52 @@ public class StringValidator {
             throw new NullPointerException("Ошибка ввода: данные о фамилии/имени/отчестве не введены.");
         }
         // тут могут быть проблемы с кодировкой, в которых я пока не разобрался.
+        // надо проверить двойные фамилии, вроде Салтыков-Щедрин.
         if (!surname.matches("^([A-Za-z]{2,}|[а-яА-ЯЁё]{2,})$")) {
             throw new RuntimeException("Ошибка ввода фамилии: фамилия должна содержать не менее 2-х символов" +
                                        "латиницы или кириллицы (только заглавные или строчный буквы).");
         }
     }
 
-    // TODO: можно сделать аргумент-флаг для имени и отчества и использовать интерполяцию. Или написать вторую такую же функцию для отчества.
-    // TODO: но лучше вынести общение с пользователем и корректировку полей StringParser'a за пределы Validator'а.
     private void nameValidator() {
         String name = parsedString.getName();
         if (name == null) {
-            Scanner scanner = new Scanner(System.in);
-            String confirmation = "";
-            while (!confirmation.matches("^[yYnN]$")) {
-                System.out.print("Подтвердите отсутствие имени (y/n): ");
-                confirmation = scanner.nextLine();
-            }
-            if (confirmation.matches("[nN]")) {
-                System.out.print("Введите имя: ");
-                parsedString.setName(scanner.nextLine());
-                nameValidator();
-            }
+            nameOfPatronymicCheckAndSet("имя");
         } else if ((!name.matches("^([A-Za-z]{2,}|[а-яА-ЯЁё]{2,})$"))) {
             throw new RuntimeException("Ошибка ввода фамилии: имя (если есть) должно содержать не менее 2-х символов\n" +
                                        "латиницы или кириллицы (только заглавные или строчный буквы");
+        }
+    }
+
+    private void patronymicValidator() {
+        String patronymic = parsedString.getPatronymic();
+        if (patronymic == null) {
+            nameOfPatronymicCheckAndSet("отчество");
+        // проверить отчества, состоящие из 2 и более слов, всякие Оглы, Кызы и т.п.
+        } else if ((!patronymic.matches("^([A-Za-z]{2,}|[а-яА-ЯЁё]{2,})$"))) {
+            throw new RuntimeException("Ошибка ввода фамилии: имя (если есть) должно содержать не менее 2-х символов\n" +
+                    "латиницы или кириллицы (только заглавные или строчный буквы");
+        }
+    }
+
+    private void nameOfPatronymicCheckAndSet(String nameOrPatronymic) {
+        Scanner scanner = new Scanner(System.in);
+        String confirmation = "";
+        while (!confirmation.matches("^[yYnN]$")) {
+            System.out.print(nameOrPatronymic + " отсутствует? (y/n): ");
+            confirmation = scanner.nextLine();
+        }
+        if (confirmation.matches("[nN]")) {
+            System.out.print("Введите " + nameOrPatronymic + ": ");
+            if (nameOrPatronymic.equals("имя")) {
+                parsedString.setName(scanner.nextLine());
+                nameValidator();
+            } else {
+                parsedString.setPatronymic(scanner.nextLine());
+                patronymicValidator();
+            }
+        } else {
+            parsedString.setName("-");
         }
     }
 
@@ -77,7 +100,7 @@ public class StringValidator {
     private void sexValidator() {
         if (!parsedString.getSex().matches("^[mMfF]$")) {
             throw new RuntimeException("Ошибка ввода пола: пол не введен или нарушен формат ввода." +
-                                       "Правильный формат ввода: латинские строчный или заглавные буквы");
+                                       "Правильный формат ввода: латинские строчный или заглавные буквы F или M");
         }
     }
 
